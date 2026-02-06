@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Valentine's Day</title>
+    <!-- Importing Cute Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Pacifico&display=swap"
+        rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest" crossorigin="anonymous"></script>
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --primary-color: #ff4d6d;
+            --secondary-color: #ff8fa3;
+            --bg-color: #fff0f3;
+            --text-color: #590d22;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --shadow: 0 10px 30px rgba(255, 77, 109, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #fff0f3 0%, #fff5f7 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+            }
+
+            15% {
+                transform: scale(1.3);
+            }
+
+            30% {
+                transform: scale(1);
+            }
+
+            45% {
+                transform: scale(1.15);
+            }
+
+            60% {
+                transform: scale(1);
+            }
+        }
+
+        /* --- BACKGROUND HEARTS --- */
+        .floating-hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            color: var(--secondary-color);
+            opacity: 0.6;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        /* --- LAYOUT & PAGES --- */
+        .app-container {
+            position: relative;
+            z-index: 10;
+            max-width: 600px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .page {
+            display: none;
+            /* Hidden by default */
+            animation: fadeIn 0.8s ease-out;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 2px solid #fff;
+            text-align: center;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1,
+        h2 {
+            font-family: 'Pacifico', cursive;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+        }
+
+        p {
+            line-height: 1.6;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        /* --- NAVIGATION GRID (Menu) --- */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .nav-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .nav-card i {
+            color: var(--primary-color);
+        }
+
+        /* --- GALLERY (Masonry-ish Grid) --- */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .gallery-item {
+            position: relative;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            aspect-ratio: 1 / 1;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery-item img,
+        .gallery-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .gallery-item:hover img,
+        .gallery-item:hover video {
+            transform: scale(1.1);
+        }
+
+        .gallery-item .gallery-item-play {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 2.5rem;
+            pointer-events: none;
+        }
+
+        .gallery-year-label {
+            margin-bottom: 10px;
+        }
+
+        .gallery-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .gallery-buttons .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .date-link {
+            color: var(--primary-color);
+            font-weight: bold;
+            text-decoration: none;
+            border-bottom: 2px solid var(--secondary-color);
+            transition: opacity 0.2s;
+        }
+        .date-link:hover {
+            opacity: 0.85;
+        }
+
+        /* --- LETTER STYLING --- */
+        .letter-content {
+            text-align: left;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px dashed var(--primary-color);
+            position: relative;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-line;
+        }
+
+        /* --- REASONS LIST --- */
+        .reasons-list {
+            list-style: none;
+            text-align: left;
+        }
+
+        .reasons-list li {
+            background: white;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* --- MODAL (For full image view) --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .modal.open {
+            display: flex;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal img,
+        .modal video {
+            max-width: 90%;
+            max-height: 80vh;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .modal .modal-media {
+            display: none;
+        }
+        .modal .modal-media.active {
+            display: block;
+        }
+
+        .close-modal {
+            color: white;
+            font-size: 2rem;
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            cursor: pointer;
+        }
+
+        /* --- MUSIC PLAYER --- */
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            z-index: 50;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--primary-color);
+        }
+
+        .music-control.playing i {
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Background Animation Elements -->
+    <div class="floating-hearts-container" id="heartsContainer"></div>
+
+    <!-- Music Player (Hidden Audio) -->
+    <audio id="bgMusic" loop>
+        <source src="assets/audio.mp3" type="audio/mpeg">
+    </audio>
+    <div class="music-control" id="musicBtn" onclick="toggleMusic()">
+        <i data-lucide="music"></i>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div class="app-container">
+
+        <!-- PAGE 1: LANDING -->
+        <section id="home" class="page active">
+            <div style="font-size: 4rem; margin-bottom: 20px; animation: heartbeat 2s infinite;">❤️</div>
+            <h1>Hey Shruthi! 👋💕</h1>
+            <p>
+                I made something special just for you because you inspire all my best bad ideas. ✨<br><br><br>
+                Are you interested? 🤗
+            </p>
+            <button class="btn" onclick="playMusic(); navigateTo('menu');">Yes 😊</button>
+            <button class="btn btn-secondary" id="noBtn" onclick="handleNo()">No 😐</button>
+        </section>
+
+        <!-- PAGE 2: MENU -->
+        <section id="menu" class="page">
+            <h2>Explore the little things I love about us. 💖</h2>
+
+            <div class="nav-grid">
+                <div class="nav-card" onclick="navigateTo('gallery')">
+                    <i data-lucide="image" size="32"></i>
+                    <span>Our Memories 📸</span>
+                </div>
+                <div class="nav-card" onclick="navigateTo('letter')">
+                    <i data-lucide="mail" size="32"></i>
+                    <span>My Letter 💌</span>
+                </div>
+                <div class="nav-card" onclick="navigateTo('reasons')">
+                    <i data-lucide="heart" size="32"></i>
+                    <span>Why I Love You 💕</span>
+                </div>
+                <div class="nav-card" onclick="navigateTo('date')">
+                    <i data-lucide="party-popper" size="32"></i>
+                    <span>Surprise Me! 🎉</span>
+                </div>
+            </div>
+
+            <br>
+            <button class="btn btn-secondary" onclick="navigateTo('home')">Back</button>
+        </section>
+
+        <!-- PAGE 3: GALLERY -->
+        <section id="gallery" class="page">
+            <h2>Our Best Moments</h2>
+            <p class="gallery-year-label" id="galleryYearLabel">Click on an image to see it clearly. 👆✨</p>
+
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Images will be populated by JavaScript (year-wise) -->
+            </div>
+
+            <div class="gallery-buttons">
+                <button class="btn btn-secondary" onclick="navigateTo('menu')">Back to Main</button>
+                <button class="btn" id="galleryNextBtn" onclick="showNextYear()">Next</button>
+            </div>
+        </section>
+
+        <!-- PAGE 4: LETTER -->
+        <section id="letter" class="page">
+            <h2>To My Valentine 💌</h2>
+            <div class="letter-content">
+                <p><strong>Dearest Shruthi, 💕</strong></p>
+                <p>ನಿಜ ಹೇಳ್ತೀನಿ… you drive me a little crazy 😌
+                    Good way. Very good way 😉
+                    
+                    ನಿನ್ನ ಒಂದು look ಸಾಕು 😏
+                    my brain stops working and my heart says “Yep, this is my woman” 💥💓
+                    ನಿನ್ನ smile 😍, ನಿನ್ನ touch ✋ — instant mood changer.
+                    
+                    You’re my calm 😌
+                    but let’s be honest…
+                    you’re also the reason my heart races 💓 and my thoughts get a little… naughty 😈
+                    
+                    ನಿನ್ನ ಜೊತೆಯಲ್ಲಿ ಇದ್ದಾಗ,
+                    time slow ಆಗುತ್ತೆ ⏳
+                    distance forget ಆಗುತ್ತೆ 💫
+                    and self-control… sometimes disappears 😜
+                    
+                    I made something special just for you 💝
+                    because I wanted you to know —
+                    I still crave you, want you, and choose you 🔥
+                    not just as my wife, but as my favourite temptation 😘
+                    
+                    You are my partner 🤍
+                    my weakness 😏
+                    my safe place 🫶
+                    and the only person who can distract me this much 😈💋
+                    
+                    ಬಾ ಇತ್ತ… closer 🫦
+                    ಒಂದು long hug 🤗
+                    ಒಂದು slow kiss 😘
+                    ಮತ್ತು… let’s not write everything here 😉🔥
+                </p>
+                <p><strong>Forever yours,<br>Kishore 💌</strong></p>
+            </div>
+            <br>
+            <button class="btn btn-secondary" onclick="navigateTo('menu')">Back to Menu</button>
+        </section>
+
+        <!-- PAGE 5: REASONS -->
+        <section id="reasons" class="page">
+            <h2>Why I Love You 💖</h2>
+            <ul class="reasons-list">
+                
+                <li><i data-lucide="check" color="#ff4d6d"></i> You make my bad days softer and my good days brighter. ☀️</li>
+                
+                <li><i data-lucide="check" color="#ff4d6d"></i> You’re sweet… until you’re not 😌</li>
+                
+                <li><i data-lucide="check" color="#ff4d6d"></i> You’re my calm and my chaos at the same time. 🌊✨</li>
+                
+                <li><i data-lucide="check" color="#ff4d6d"></i> You drive me a little crazy… and I kinda love it. 😵‍💫❤️</li>
+                
+                <li><i data-lucide="check" color="#ff4d6d"></i> You’re my calm, my chaos, and my biggest crush. 💕</li>
+
+            </ul>
+            <br>
+            <button class="btn btn-secondary" onclick="navigateTo('menu')">Back to Menu</button>
+        </section>
+
+        <!-- PAGE 6: DATE NIGHT -->
+        <section id="date" class="page">
+            <h2>Let's Go! 🎒🏔️</h2>
+            <p>I have a plan for us... 🤫💕</p>
+            <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <i data-lucide="mountain" size="40" color="#ff4d6d"></i>
+                <h3>Let’s take the scenic route — together 🌲</h3>
+                <p>How about we swap screens for trails? I’d love to take you on a <strong>hiking trip</strong> — just us, some fresh air, and a view worth sharing. 🏞️ Pick a date, and I’ll handle the rest. ✨</p>
+                <p style="margin-top: 12px;">Choose our first adventure here: <a href="https://in.bookmyshow.com/explore/activities-bengaluru?categories=adventure" target="_blank" rel="noopener noreferrer" class="date-link">Explore adventures in Bengaluru 🗺️ →</a></p>
+            </div>
+            <button class="btn" onclick="handleYes()">Let's Go! 🎒❤️</button>
+            <br><br>
+            <button class="btn btn-secondary" onclick="navigateTo('menu')">Back</button>
+        </section>
+
+    </div>
+
+    <!-- IMAGE/VIDEO MODAL -->
+    <div class="modal" id="imageModal" onclick="closeModal()">
+        <span class="close-modal">×</span>
+        <img id="modalImg" class="modal-media" src="" alt="Full size">
+        <video id="modalVideo" class="modal-media" controls playsinline></video>
+    </div>
+
+    <script>
+        // Gallery images from backend (filenames like 18-1, 19, 20 = year or year-variant)
+        const galleryImages = [
+            "assets/18-1.jpg",
+            "assets/18-2.jpg",
+            "assets/18-3.jpg",
+            "assets/18-4.jpg",
+            "assets/18-5.jpg",
+            "assets/18-6.jpg",
+            "assets/19-1.jpg",
+            "assets/19-2.jpg",
+            "assets/19-3.jpg",
+            "assets/20-1.jpg",
+            "assets/20-2.jpg",
+            "assets/20-3.jpg",
+            "assets/21-1.jpg",
+            "assets/21-2.jpg",
+            "assets/21-3.jpg",
+            "assets/22-1.jpg",
+            "assets/22-2.jpg",
+            "assets/22-3.jpg",
+            "assets/23-1.jpg",
+            "assets/23-2.jpg",
+            "assets/23-3.jpg",
+            "assets/23-4.jpg",
+            "assets/23-5.jpg",
+            "assets/23-6.jpg",
+            "assets/24.MOV",
+        ];
+
+        // WhatsApp configuration from backend
+        const phoneNumber = "+918971787176";
+
+        // --- GALLERY YEAR-WISE ---
+        function getYearFromPath(path) {
+            const match = path.match(/(\d{2})/);
+            return match ? 2000 + parseInt(match[1], 10) : 0;
+        }
+
+        const galleryByYear = {};
+        galleryImages.forEach(src => {
+            const year = getYearFromPath(src);
+            if (!galleryByYear[year]) galleryByYear[year] = [];
+            galleryByYear[year].push(src);
+        });
+        const galleryYears = Object.keys(galleryByYear).map(Number).sort((a, b) => a - b);
+        let currentGalleryYearIndex = 0;
+
+        const galleryContainer = document.getElementById('galleryGrid');
+        const galleryYearLabel = document.getElementById('galleryYearLabel');
+        const galleryNextBtn = document.getElementById('galleryNextBtn');
+
+        function renderGalleryYear() {
+            galleryContainer.innerHTML = '';
+            const year = galleryYears[currentGalleryYearIndex];
+            const images = galleryByYear[year] || [];
+            galleryYearLabel.textContent = year ? `Photos from ${year}` : 'Click on an image to see it clearly. 👆✨';
+
+            images.forEach(src => {
+                const div = document.createElement('div');
+                div.className = 'gallery-item';
+                div.onclick = () => openModal(src);
+
+                if (isVideo(src)) {
+                    const video = document.createElement('video');
+                    video.src = src;
+                    video.preload = 'metadata';
+                    video.muted = true;
+                    video.playsInline = true;
+                    video.setAttribute('playsinline', '');
+                    video.alt = "Our memory";
+                    div.appendChild(video);
+                    const play = document.createElement('span');
+                    play.className = 'gallery-item-play';
+                    play.innerHTML = '▶';
+                    div.appendChild(play);
+                } else {
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.alt = "Our memory";
+                    img.loading = "lazy";
+                    div.appendChild(img);
+                }
+                galleryContainer.appendChild(div);
+            });
+
+            if (currentGalleryYearIndex >= galleryYears.length - 1) {
+                galleryNextBtn.remove();
+            }
+        }
+
+        function showNextYear() {
+            if (currentGalleryYearIndex < galleryYears.length - 1) {
+                currentGalleryYearIndex++;
+                renderGalleryYear();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function onNavigateToGallery() {
+            currentGalleryYearIndex = 0;
+            renderGalleryYear();
+        }
+
+        // --- ICONS INIT ---
+        lucide.createIcons();
+
+        function handleYes() {
+            if (phoneNumber) {
+                const message = "Yes! I will be your Valentine! let's go! ❤️";
+                window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
+            } else {
+                alert('Yay! It\'s a date! ❤️');
+            }
+        }
+
+        const noButtonTitles = ['No 😐', 'Are you sure? 🤔', 'Really Sure? 😢', 'Are you postive? 🙏', 'Shru Please... 😭', 'Just Think Abou It 💭', 'Pooof!!! ✨'];
+        let noTapCount = 0;
+
+        function handleNo() {
+            const btn = document.getElementById('noBtn');
+            if (noTapCount >= 7) return;
+            noTapCount++;
+            btn.textContent = noButtonTitles[noTapCount];
+            if (noTapCount === 7) {
+                btn.remove();
+            }
+        }
+
+        // --- NAVIGATION LOGIC ---
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+                page.style.display = 'none';
+            });
+
+            const target = document.getElementById(pageId);
+            target.style.display = 'block';
+
+            setTimeout(() => {
+                target.classList.add('active');
+            }, 10);
+
+            if (pageId === 'gallery') onNavigateToGallery();
+            window.scrollTo(0, 0);
+        }
+
+        // --- GALLERY (year-wise rendering is in renderGalleryYear; initial load when opening gallery) ---
+
+        // --- MODAL LOGIC ---
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImg');
+        const modalVideo = document.getElementById('modalVideo');
+        let musicPausedForVideo = false;
+
+        function isVideo(src) {
+            return /\.(MOV|mov|mp4|webm|ogg)$/i.test(src);
+        }
+
+        function openModal(src) {
+            if (isVideo(src)) {
+                if (isPlaying) {
+                    bgMusic.pause();
+                    musicPausedForVideo = true;
+                }
+                modalImg.classList.remove('active');
+                modalImg.src = '';
+                modalVideo.classList.add('active');
+                modalVideo.src = src;
+                modal.classList.add('open');
+                modalVideo.play();
+            } else {
+                modalVideo.pause();
+                modalVideo.src = '';
+                modalVideo.classList.remove('active');
+                modalImg.classList.add('active');
+                modalImg.src = src;
+                modal.classList.add('open');
+            }
+        }
+
+        function closeModal() {
+            modal.classList.remove('open');
+            modalVideo.pause();
+            modalVideo.src = '';
+            if (musicPausedForVideo) {
+                bgMusic.play();
+                musicPausedForVideo = false;
+            }
+        }
+
+        // --- FLOATING HEARTS EFFECT ---
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+
+            document.getElementById('heartsContainer').appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 7000);
+        }
+
+        setInterval(createHeart, 500);
+
+        // --- MUSIC TOGGLE ---
+        const bgMusic = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+        let isPlaying = false;
+        let musicUnlocked = false;
+
+        function unlockAndStartMusic() {
+            if (musicUnlocked) return;
+            musicUnlocked = true;
+            document.removeEventListener('click', unlockAndStartMusic);
+            document.removeEventListener('touchstart', unlockAndStartMusic);
+            bgMusic.play().then(() => {
+                isPlaying = true;
+                musicBtn.classList.add('playing');
+                musicBtn.innerHTML = '<i data-lucide="pause"></i>';
+                lucide.createIcons();
+            }).catch(() => {});
+        }
+
+        // Browsers block sound until user interacts; start on first click/tap anywhere
+        document.addEventListener('click', unlockAndStartMusic, { once: true });
+        document.addEventListener('touchstart', unlockAndStartMusic, { once: true });
+
+        function toggleMusic() {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicBtn.classList.remove('playing');
+                musicBtn.innerHTML = '<i data-lucide="music"></i>';
+            } else {
+                bgMusic.play();
+                musicBtn.classList.add('playing');
+                musicBtn.innerHTML = '<i data-lucide="pause"></i>';
+            }
+            lucide.createIcons();
+            isPlaying = !isPlaying;
+        }
+
+        function playMusic() {
+            if (isPlaying) return;
+            bgMusic.play();
+            musicBtn.classList.add('playing');
+            musicBtn.innerHTML = '<i data-lucide="pause"></i>';
+            lucide.createIcons();
+            isPlaying = true;
+        }
+    </script>
+
+</body>
+
+</html>
